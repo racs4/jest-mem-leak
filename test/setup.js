@@ -1,13 +1,25 @@
-const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer;
+const MongoMemoryServer = require("mongodb-memory-server").MongoMemoryServer;
 
-let mongoServer
+let mongoServer;
 
-beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create()
-})
+exports.mochaHooks = {
+  beforeEach(done) {
+    console.log();
+    MongoMemoryServer.create().then((mongoServerInstance) => {
+      console.log("mongoServerInstance initialized");
+      mongoServer = mongoServerInstance;
+      done();
+    });
+  },
 
-afterAll(async () => {
-  await mongoServer.stop()
-
-  global.gc && global.gc()
-})
+  afterEach(done) {
+    mongoServer.stop().then(() => {
+      global.gc && global.gc();
+      const used = process.memoryUsage().heapUsed / 1024 / 1024;
+      console.log(
+        `The script uses approximately ${Math.round(used * 100) / 100} MB`
+      );
+      done();
+    });
+  },
+};

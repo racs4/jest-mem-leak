@@ -4,20 +4,11 @@
   "main": "src",
   "private": true,
   "scripts": {
-    "test": "jest",
-    "test-band": "node --expose-gc ./node_modules/.bin/jest --runInBand --logHeapUsage"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/setup.js"
-    ],
-    "testMatch": ["**/test*.test.(ts|js)"]
+    "test": "mocha --check-leaks --jobs 1 --require ./test/setup.js --spec src/**/*.test.js --timeout 600000",
+    "test-band": "node --expose-gc ./node_modules/.bin/mocha --check-leaks --jobs 1 --require ./test/setup.js --spec src/**/*.test.js --timeout 600000"
   },
   "devDependencies": {
-    "jest": "^29.6.1",
+    "mocha": "^10.2.0",
     "mongodb-memory-server": "^8.13.0"
-  },
-  "dependencies": {
   }
 }
